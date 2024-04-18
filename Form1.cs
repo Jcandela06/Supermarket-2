@@ -1,4 +1,4 @@
-namespace Supermarket_2
+namespace Supermarket_mvp
 {
     public partial class Form1 : Form
     {
