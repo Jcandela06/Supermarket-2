@@ -40,14 +40,15 @@ namespace Supermarket_mvp.Presenters
         private void LoadAllProductList()
         {
             productList = repository.GetAll();
-            productBindingSource.DataSource = productList;
+            productBindingSource.DataSource = productList;  
         }
 
-        private void SearchProduct(object sender, EventArgs e)
+        private void SearchProduct(object? sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(this.view.SearchValue))
+            bool emptyValue = string.IsNullOrWhiteSpace(this.view.SearchValue);
+            if (emptyValue == false)
             {
-                productList = repository.Search(this.view.SearchValue);
+                productList = repository.GetByValues(this.view.SearchValue);
             }
             else
             {
@@ -64,12 +65,12 @@ namespace Supermarket_mvp.Presenters
         private void SaveProduct(object sender, EventArgs e)
         {
             var product = new ProductModel();
-            product.Id = view.ProductId;
-            product.Name = view.ProductName;
-            product.CategoryId = view.CategoryId;
-            product.ProviderId = view.ProviderId;
-            product.Price = view.Price;
-            product.StockQuantity = view.StockQuantity;
+            product.ProductId = Convert.ToInt32(view.ProductId);
+            product.ProductName = view.ProductName;
+            product.CategoryId = Convert.ToInt32(view.CategoryId);
+            product.ProviderId = Convert.ToInt32(view.ProviderId);
+            product.Price = Convert.ToInt32(view.Price);
+            product.StockQuantity = Convert.ToInt32(view.StockQuantity);
 
             try
             {
@@ -97,26 +98,26 @@ namespace Supermarket_mvp.Presenters
 
         private void CleanViewFields()
         {
-            view.ProductId = 0;
+            view.ProductId = "0";
             view.ProductName = "";
-            view.CategoryId = 0;
-            view.ProviderId = 0;
-            view.Price = 0;
-            view.StockQuantity = 0;
+            view.CategoryId = "0";
+            view.ProviderId = "0";
+            view.Price = "0";
+            view.StockQuantity = "0";
         }
 
-        private void LoadSelectProductToEdit(object sender, EventArgs e)
+        private void LoadSelectProductToEdit(object? sender, EventArgs e)
         {
             var product = (ProductModel)productBindingSource.Current;
 
-            view.ProductId = product.Id;
-            view.ProductName = product.Name;
-            view.CategoryId = product.CategoryId;
-            view.ProviderId = product.ProviderId;
-            view.Price = product.Price;
-            view.StockQuantity = product.StockQuantity;
+            view.ProductId = product.ProductId.ToString();
+            view.ProductName = product.ProductName;
+            view.CategoryId = product.CategoryId.ToString();
+            view.ProviderId = product.ProviderId.ToString();
+            view.Price = product.Price.ToString();
+            view.StockQuantity = product.StockQuantity.ToString();
 
-            view.IsEdit = true;
+            view.IsEdit = false;
         }
 
         private void DeleteSelectedProduct(object sender, EventArgs e)
@@ -125,7 +126,7 @@ namespace Supermarket_mvp.Presenters
             {
                 var product = (ProductModel)productBindingSource.Current;
 
-                repository.Delete(product.Id);
+                repository.Delete(product.ProductId);
                 view.IsSuccessful = true;
                 view.Message = "Product deleted successfully";
                 LoadAllProductList();
@@ -141,5 +142,6 @@ namespace Supermarket_mvp.Presenters
         {
             view.IsEdit = false;
         }
+        
     }
 }
